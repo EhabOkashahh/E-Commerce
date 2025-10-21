@@ -30,9 +30,9 @@ namespace E_Commerce
             });
             builder.Services.AddScoped<IDbInitializer , DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork , UnitOfWork>();
-            builder.Services.AddAutoMapper(M => M.AddProfile(new ProductProfile()));
+            builder.Services.AddAutoMapper(M => M.AddProfile(new ProductProfile(builder.Configuration)));
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
-
+            
 
             var app = builder.Build();
 
@@ -43,6 +43,7 @@ namespace E_Commerce
 
             #endregion
 
+            app.UseStaticFiles();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
