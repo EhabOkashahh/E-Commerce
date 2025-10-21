@@ -24,12 +24,20 @@ namespace E_Commerce.Persistence.Repository
             return ChangeTracker ? await _context.Set<TEntity>().ToListAsync():
                                    await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
+        public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TKey,TEntity> spec,bool ChangeTracker = false)
+        {
+            return await ApplySpecifications(spec).ToListAsync();
+        }
         public async Task<TEntity> GetAsync(TKey key)
         {
             if(typeof(TEntity) == typeof(Product)){
                 return await _context.Products.Include(P=>P.Brand).Include(p=>p.Type).FirstOrDefaultAsync(P=>P.Id == key as int?) as TEntity;
             }
             return await _context.Set<TEntity>().FindAsync(key);
+        }
+        public async Task<TEntity> GetAsync(ISpecifications<TKey,TEntity> spec)
+        {
+            return await ApplySpecifications(spec).FirstOrDefaultAsync();
         }
 
         public async Task AddAsync(TEntity entity)
@@ -45,5 +53,13 @@ namespace E_Commerce.Persistence.Repository
             _context.Set<TEntity>().Remove(entity);
         }
 
+
+
+
+        // Method to apply spec
+        private IQueryable<TEntity> ApplySpecifications(ISpecifications<TKey,TEntity> spec)
+        {
+            return SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec);
+        }
     }
 }

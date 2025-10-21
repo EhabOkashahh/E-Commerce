@@ -11,7 +11,9 @@ namespace E_Commerce.Domain.Contracts
     {
 
         Task<IEnumerable<TEntity>> GetAllAsync(bool ChangeTracker = false);
+        Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TKey,TEntity> spec,bool ChangeTracker = false);
         Task<TEntity> GetAsync(TKey key);
+        Task<TEntity> GetAsync(ISpecifications<TKey, TEntity> spec);
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);

@@ -2,6 +2,7 @@
 using E_Commerce.Domain.Contracts;
 using E_Commerce.Domain.Entities.Products;
 using E_Commerce.Services.Aabstractions.Product;
+using E_Commerce.Services.Specification.Products;
 using E_Commerce.Shared.DTOS.Product;
 using System;
 using System.Collections.Generic;
@@ -15,14 +16,20 @@ namespace E_Commerce.Services.Products
     {
         public async Task<IEnumerable<ProductResponse>> GetAllProductAsync()
         {
-            var products = await unitOfWork.GetRepository<int, Product>().GetAllAsync();
+
+            var spec = new ProductsWithBrandAndTypeSpecifications();
+
+            var products = await unitOfWork.GetRepository<int, Product>().GetAllAsync(spec);
             var Response = _mapper.Map<IEnumerable<ProductResponse>>(products);
             return Response;
         }
 
         public async Task<ProductResponse> GetProductByIdAsync(int id)
         {
-            var product = await unitOfWork.GetRepository<int,Product>().GetAsync(id);
+
+            var spec = new ProductsWithBrandAndTypeSpecifications(id);
+
+            var product = await unitOfWork.GetRepository<int,Product>().GetAsync(spec);
             var response = _mapper.Map<ProductResponse>(product);
             return response;
         }   
