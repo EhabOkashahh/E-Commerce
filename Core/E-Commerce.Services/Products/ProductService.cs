@@ -14,10 +14,10 @@ namespace E_Commerce.Services.Products
 {
     public class ProductService(IUnitOfWork unitOfWork , IMapper _mapper) : IProductServices
     {
-        public async Task<IEnumerable<ProductResponse>> GetAllProductAsync()
+        public async Task<IEnumerable<ProductResponse>> GetAllProductAsync(int? brandId , int? typeId)
         {
 
-            var spec = new ProductsWithBrandAndTypeSpecifications();
+            var spec = new ProductsWithBrandAndTypeSpecifications(brandId,typeId);
 
             var products = await unitOfWork.GetRepository<int, Product>().GetAllAsync(spec);
             var Response = _mapper.Map<IEnumerable<ProductResponse>>(products);

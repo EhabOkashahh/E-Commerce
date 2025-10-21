@@ -9,7 +9,7 @@ namespace E_Commerce.Services.Aabstractions.Product
 {
     public interface IProductServices
     {
-        Task<IEnumerable<ProductResponse>> GetAllProductAsync();
+        Task<IEnumerable<ProductResponse>> GetAllProductAsync(int? brandId , int? typeId);
         Task<ProductResponse> GetProductByIdAsync(int id);
         Task<IEnumerable<BrandTypeResponse>> GetAllBrandsAsync();
         Task<IEnumerable<BrandTypeResponse>> GetAllCategoriesAsync();

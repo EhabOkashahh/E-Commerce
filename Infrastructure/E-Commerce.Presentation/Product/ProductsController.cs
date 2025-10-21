@@ -13,9 +13,9 @@ namespace E_Commerce.Presentation.Product
     public class ProductsController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllProductsAsync()
+        public async Task<IActionResult> GetAllProducts(int? brandId , int? typeId)
         {
-            var response = await _serviceManager.ProductServices.GetAllProductAsync();
+            var response = await _serviceManager.ProductServices.GetAllProductAsync(brandId,typeId);
             if (response is null) return BadRequest();
             return Ok(response);
         }
@@ -30,14 +30,14 @@ namespace E_Commerce.Presentation.Product
         }
 
         [HttpGet("brands")]
-        public async Task<IActionResult> GetAllBrandsAsync()
+        public async Task<IActionResult> GetAllBrands()
         {
             var response = await _serviceManager.ProductServices.GetAllBrandsAsync();
             if (response is null) return BadRequest();
             return Ok(response);
         }
         [HttpGet("types")]
-        public async Task<IActionResult> GetAllTypesAsync()
+        public async Task<IActionResult> GetAllTypes()
         {
             var response = await _serviceManager.ProductServices.GetAllCategoriesAsync();
             if (response is null) return BadRequest();
