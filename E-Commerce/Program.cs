@@ -2,6 +2,9 @@
 using E_Commerce.Domain.Contracts;
 using E_Commerce.Persistence;
 using E_Commerce.Persistence.Data.Contexts;
+using E_Commerce.Services;
+using E_Commerce.Services.Aabstractions;
+using E_Commerce.Services.Mapping.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -26,6 +29,9 @@ namespace E_Commerce
                 o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
             builder.Services.AddScoped<IDbInitializer , DbInitializer>();
+            builder.Services.AddScoped<IUnitOfWork , UnitOfWork>();
+            builder.Services.AddAutoMapper(M => M.AddProfile(new ProductProfile()));
+            builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
 
             var app = builder.Build();
