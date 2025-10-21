@@ -13,5 +13,8 @@ namespace E_Commerce.Domain.Contracts
         public List<Expression<Func<TEntity, object>>> IncludeExpressions { get; set; }
 
         public Expression<Func<TEntity,bool>>? FilterationExpression { get; set; }
+
+        public Expression<Func<TEntity,object>>? OrderBy { get; set; }
+        public Expression<Func<TEntity,object>>? OrderByDesc { get; set; }
     }
 }

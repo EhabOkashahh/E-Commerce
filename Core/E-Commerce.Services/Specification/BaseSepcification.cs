@@ -14,10 +14,21 @@ namespace E_Commerce.Services.Specification
     {
         public List<Expression<Func<TEntity, object>>> IncludeExpressions { get; set; } = new List<Expression<Func<TEntity, object>>>();
         public Expression<Func<TEntity, bool>>? FilterationExpression { get; set; }
+        public Expression<Func<TEntity, object>>? OrderBy { get ; set; }
+        public Expression<Func<TEntity, object>>? OrderByDesc { get ; set ; }
 
         public BaseSepcification(Expression<Func<TEntity, bool>>? expression)
         {
             FilterationExpression = expression;
+        }
+
+        public void AddOrderBy(Expression<Func<TEntity, object>> expression)
+        {
+            OrderBy = expression;
+        }
+        public void AddOrderBydesc(Expression<Func<TEntity, object>> expression)
+        {
+            OrderByDesc = expression;
         }
     }
 }

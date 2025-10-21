@@ -15,14 +15,35 @@ namespace E_Commerce.Services.Specification.Products
 
             ApplyInclude();
         }
-        public ProductsWithBrandAndTypeSpecifications(int? brandId, int? typeId) : base(
+        public ProductsWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort, string? searchText) : base(
                 p =>
                 (!brandId.HasValue || p.BrandId == brandId)
                 &&
                 (!typeId.HasValue || p.TypeId == typeId)
+                &&
+                (string.IsNullOrEmpty(searchText) || p.Name.ToLower().Contains(searchText.ToLower()))
             )
         {
-            ApplyInclude();
+            if (!string.IsNullOrEmpty(sort))
+            {
+                switch (sort.ToLower())
+                {
+                    case "priceasc":
+                        AddOrderBy(p=>p.Price);
+                        break;
+                    case "pricedesc":
+                        AddOrderBydesc(p=>p.Price);
+                        break;
+                    default:
+                        AddOrderBy(p => p.Name);
+                        break;
+                }
+            }
+            else
+            {
+                AddOrderBy(p=>p.Name);
+            }
+                ApplyInclude();
         }
 
         private void ApplyInclude()

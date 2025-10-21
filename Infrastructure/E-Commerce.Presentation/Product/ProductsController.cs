@@ -13,9 +13,9 @@ namespace E_Commerce.Presentation.Product
     public class ProductsController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts(int? brandId , int? typeId)
+        public async Task<IActionResult> GetAllProducts(int? brandId , int? typeId , string? sort,string? searchText)
         {
-            var response = await _serviceManager.ProductServices.GetAllProductAsync(brandId,typeId);
+            var response = await _serviceManager.ProductServices.GetAllProductAsync(brandId,typeId,sort,searchText);
             if (response is null) return BadRequest();
             return Ok(response);
         }
