@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Domain.Entities.Products;
+using E_Commerce.Shared.DTOS.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,27 +13,40 @@ namespace E_Commerce.Services.Specification.Products
     {
         public ProductsWithBrandAndTypeSpecifications(int id) : base(p=>p.Id == id)
         {
-
             ApplyInclude();
         }
-        public ProductsWithBrandAndTypeSpecifications(int? brandId, int? typeId, string? sort, string? searchText) : base(
+        public ProductsWithBrandAndTypeSpecifications(ProductQueryParam param) : base(
                 p =>
-                (!brandId.HasValue || p.BrandId == brandId)
+                (!param.brandId.HasValue || p.BrandId == param.brandId)
                 &&
-                (!typeId.HasValue || p.TypeId == typeId)
+                (!param.typeId.HasValue || p.TypeId == param.typeId)
                 &&
-                (string.IsNullOrEmpty(searchText) || p.Name.ToLower().Contains(searchText.ToLower()))
+                (string.IsNullOrEmpty(param.searchText) || p.Name.ToLower().Contains(param.searchText.ToLower()))
             )
+        {
+            
+            ApplyInclude();
+            ApplySorting(param.Sort);
+            ApplyPagination(param.pageSize, param.pageIndex);
+        }
+
+
+        private void ApplyInclude()
+        {
+            IncludeExpressions.Add(P => P.Brand);
+            IncludeExpressions.Add(P => P.Type);
+        }
+        private void ApplySorting(string sort)
         {
             if (!string.IsNullOrEmpty(sort))
             {
                 switch (sort.ToLower())
                 {
                     case "priceasc":
-                        AddOrderBy(p=>p.Price);
+                        AddOrderBy(p => p.Price);
                         break;
                     case "pricedesc":
-                        AddOrderBydesc(p=>p.Price);
+                        AddOrderBydesc(p => p.Price);
                         break;
                     default:
                         AddOrderBy(p => p.Name);
@@ -41,15 +55,8 @@ namespace E_Commerce.Services.Specification.Products
             }
             else
             {
-                AddOrderBy(p=>p.Name);
+                AddOrderBy(p => p.Name);
             }
-                ApplyInclude();
-        }
-
-        private void ApplyInclude()
-        {
-            IncludeExpressions.Add(P => P.Brand);
-            IncludeExpressions.Add(P => P.Type);
         }
     }
 }

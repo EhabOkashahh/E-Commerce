@@ -1,4 +1,5 @@
-﻿using E_Commerce.Shared.DTOS.Product;
+﻿using E_Commerce.Shared;
+using E_Commerce.Shared.DTOS.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace E_Commerce.Services.Aabstractions.Product
 {
     public interface IProductServices
     {
-        Task<IEnumerable<ProductResponse>> GetAllProductAsync(int? brandId , int? typeId , string? sort,string? searchText);
+        Task<PaginationResponse<ProductResponse>> GetAllProductAsync(ProductQueryParam param);
         Task<ProductResponse> GetProductByIdAsync(int id);
         Task<IEnumerable<BrandTypeResponse>> GetAllBrandsAsync();
         Task<IEnumerable<BrandTypeResponse>> GetAllCategoriesAsync();

@@ -16,12 +16,12 @@ namespace E_Commerce.Persistence.Repository
     {
         public async Task<IEnumerable<TEntity>> GetAllAsync(bool ChangeTracker = false)
         {
-            if(typeof(TEntity) == typeof(Product))
+            if (typeof(TEntity) == typeof(Product))
             {
-                return ChangeTracker ? await _context.Products.Include(P=>P.Brand).Include(P=>P.Type).ToListAsync() as IEnumerable<TEntity> :
-                                   await _context.Products.Include(p=>p.Brand).Include(p=>p.Type).AsNoTracking().ToListAsync() as IEnumerable<TEntity>;
+                return ChangeTracker ? await _context.Products.Include(P => P.Brand).Include(P => P.Type).ToListAsync() as IEnumerable<TEntity> :
+                                   await _context.Products.Include(p => p.Brand).Include(p => p.Type).AsNoTracking().ToListAsync() as IEnumerable<TEntity>;
             }
-            return ChangeTracker ? await _context.Set<TEntity>().ToListAsync():
+            return ChangeTracker ? await _context.Set<TEntity>().ToListAsync() :
                                    await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
         public async Task<IEnumerable<TEntity>> GetAllAsync(ISpecifications<TKey,TEntity> spec,bool ChangeTracker = false)
@@ -30,8 +30,9 @@ namespace E_Commerce.Persistence.Repository
         }
         public async Task<TEntity> GetAsync(TKey key)
         {
-            if(typeof(TEntity) == typeof(Product)){
-                return await _context.Products.Include(P=>P.Brand).Include(p=>p.Type).FirstOrDefaultAsync(P=>P.Id == key as int?) as TEntity;
+            if (typeof(TEntity) == typeof(Product))
+            {
+                return await _context.Products.Include(P => P.Brand).Include(p => p.Type).FirstOrDefaultAsync(P => P.Id == key as int?) as TEntity;
             }
             return await _context.Set<TEntity>().FindAsync(key);
         }
@@ -53,6 +54,10 @@ namespace E_Commerce.Persistence.Repository
             _context.Set<TEntity>().Remove(entity);
         }
 
+        public async Task<int> CountAsync(ISpecifications<TKey, TEntity> spec)
+        {
+            return await ApplySpecifications(spec).CountAsync();
+        }
 
 
 
@@ -61,5 +66,6 @@ namespace E_Commerce.Persistence.Repository
         {
             return SpecificationsEvaluator.GetQuery(_context.Set<TEntity>(), spec);
         }
+
     }
 }

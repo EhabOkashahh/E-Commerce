@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Services.Aabstractions;
+using E_Commerce.Shared.DTOS.Product;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,9 @@ namespace E_Commerce.Presentation.Product
     public class ProductsController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts(int? brandId , int? typeId , string? sort,string? searchText)
+        public async Task<IActionResult> GetAllProducts([FromQuery]ProductQueryParam param)
         {
-            var response = await _serviceManager.ProductServices.GetAllProductAsync(brandId,typeId,sort,searchText);
+            var response = await _serviceManager.ProductServices.GetAllProductAsync(param);
             if (response is null) return BadRequest();
             return Ok(response);
         }

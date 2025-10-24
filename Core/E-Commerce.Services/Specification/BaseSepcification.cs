@@ -16,6 +16,9 @@ namespace E_Commerce.Services.Specification
         public Expression<Func<TEntity, bool>>? FilterationExpression { get; set; }
         public Expression<Func<TEntity, object>>? OrderBy { get ; set; }
         public Expression<Func<TEntity, object>>? OrderByDesc { get ; set ; }
+        public int Take { get ; set; }
+        public int Skip { get ; set ; }
+        public bool IsPagination { get; set; }
 
         public BaseSepcification(Expression<Func<TEntity, bool>>? expression)
         {
@@ -29,6 +32,15 @@ namespace E_Commerce.Services.Specification
         public void AddOrderBydesc(Expression<Func<TEntity, object>> expression)
         {
             OrderByDesc = expression;
+        }
+
+        public void ApplyPagination(int PageSize, int pageIndex)
+        {
+            //pageindex = 3
+            //pagesize = 5
+            IsPagination = true;
+            Skip = (pageIndex - 1) * PageSize;
+            Take = PageSize;
         }
     }
 }

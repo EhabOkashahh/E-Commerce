@@ -19,7 +19,9 @@ namespace E_Commerce.Persistence
             if(spec.OrderBy is not null) query = query.OrderBy(spec.OrderBy);
             else if(spec.OrderByDesc is not null) query = query.OrderByDescending(spec.OrderByDesc);
 
-                query = spec.IncludeExpressions.Aggregate(query, (query, Exp) => query.Include(Exp));
+            query = spec.IncludeExpressions.Aggregate(query, (query, Exp) => query.Include(Exp));
+
+            if(spec.IsPagination) query = query.Skip(spec.Skip).Take(spec.Take);
 
             return query;
         }
