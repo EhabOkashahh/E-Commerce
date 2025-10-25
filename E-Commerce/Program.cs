@@ -1,13 +1,17 @@
 
 using E_Commerce.Domain.Contracts;
+using E_Commerce.Middlewares;
 using E_Commerce.Persistence;
 using E_Commerce.Persistence.Data.Contexts;
 using E_Commerce.Services;
 using E_Commerce.Services.Aabstractions;
 using E_Commerce.Services.Mapping.Products;
+using E_Commerce.Shared.ErrorModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace E_Commerce
 {
@@ -32,8 +36,24 @@ namespace E_Commerce
             builder.Services.AddScoped<IUnitOfWork , UnitOfWork>();
             builder.Services.AddAutoMapper(M => M.AddProfile(new ProductProfile(builder.Configuration)));
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
-            
 
+            builder.Services.Configure<ApiBehaviorOptions>(config =>
+                config.InvalidModelStateResponseFactory = (actionContext) =>
+                {
+                    var errors = actionContext.ModelState.Where(m => m.Value.Errors.Any())
+                                             .Select(m => new ValidationError()
+                                             {
+                                                 Filed = m.Key,
+                                                 Errors = m.Value.Errors.Select(e => e.ErrorMessage)
+                                             });
+                    var response = new ValidationErrorResponse()
+                    {
+                        Errors = errors
+                    };
+                    return new BadRequestObjectResult(response);
+                }
+            
+            );
             var app = builder.Build();
 
             #region Initialize database
@@ -42,6 +62,8 @@ namespace E_Commerce
             await DbInitializer.InitializeAsync();
 
             #endregion
+
+            app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
             app.UseStaticFiles();
             // Configure the HTTP request pipeline.

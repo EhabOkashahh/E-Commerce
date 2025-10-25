@@ -17,7 +17,7 @@ namespace E_Commerce.Presentation.Product
         public async Task<IActionResult> GetAllProducts([FromQuery]ProductQueryParam param)
         {
             var response = await _serviceManager.ProductServices.GetAllProductAsync(param);
-            if (response is null) return BadRequest();
+
             return Ok(response);
         }
 
@@ -26,7 +26,6 @@ namespace E_Commerce.Presentation.Product
         {
             if (id == null) return BadRequest();
              var response = await _serviceManager.ProductServices.GetProductByIdAsync(id.Value);
-            if (response is null) return NotFound();
             return Ok(response);
         }
 

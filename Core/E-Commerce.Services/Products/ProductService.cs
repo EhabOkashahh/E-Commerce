@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using E_Commerce.Domain.Contracts;
 using E_Commerce.Domain.Entities.Products;
+using E_Commerce.Domain.Exceptions.ProductExceptions;
 using E_Commerce.Services.Aabstractions.Product;
 using E_Commerce.Services.Specification.Products;
 using E_Commerce.Shared;
@@ -8,6 +9,7 @@ using E_Commerce.Shared.DTOS.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,6 +37,7 @@ namespace E_Commerce.Services.Products
             var spec = new ProductsWithBrandAndTypeSpecifications(id);
 
             var product = await unitOfWork.GetRepository<int,Product>().GetAsync(spec);
+            if (product == null) throw new ProductNotFoundException(id);
             var response = _mapper.Map<ProductResponse>(product);
             return response;
         }   
