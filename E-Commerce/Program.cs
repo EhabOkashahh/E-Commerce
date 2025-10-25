@@ -1,5 +1,6 @@
 
 using E_Commerce.Domain.Contracts;
+using E_Commerce.Extentions;
 using E_Commerce.Middlewares;
 using E_Commerce.Persistence;
 using E_Commerce.Persistence.Data.Contexts;
@@ -20,67 +21,18 @@ namespace E_Commerce
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            // add service to the container
+            builder.Services.AddAllServices(builder.Configuration);
 
-            // Add services to the container.
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<StoreDbContext>(o =>
-            {
-                o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
-            builder.Services.AddScoped<IDbInitializer , DbInitializer>();
-            builder.Services.AddScoped<IUnitOfWork , UnitOfWork>();
-            builder.Services.AddAutoMapper(M => M.AddProfile(new ProductProfile(builder.Configuration)));
-            builder.Services.AddScoped<IServiceManager, ServiceManager>();
 
-            builder.Services.Configure<ApiBehaviorOptions>(config =>
-                config.InvalidModelStateResponseFactory = (actionContext) =>
-                {
-                    var errors = actionContext.ModelState.Where(m => m.Value.Errors.Any())
-                                             .Select(m => new ValidationError()
-                                             {
-                                                 Filed = m.Key,
-                                                 Errors = m.Value.Errors.Select(e => e.ErrorMessage)
-                                             });
-                    var response = new ValidationErrorResponse()
-                    {
-                        Errors = errors
-                    };
-                    return new BadRequestObjectResult(response);
-                }
-            
-            );
             var app = builder.Build();
-
-            #region Initialize database
-            using var scope = app.Services.CreateScope();
-            var DbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-            await DbInitializer.InitializeAsync();
-
-            #endregion
-
-            app.UseMiddleware<GlobalErrorHandlingMiddleware>();
-
-            app.UseStaticFiles();
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
-            app.MapControllers();
-
+            await app.ConfigureMiddlewareAsync();
             app.Run();
+
+            
         }
     }
 }

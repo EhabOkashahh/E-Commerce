@@ -21,36 +21,47 @@ namespace E_Commerce.Middlewares
             try
             {
                 await _next.Invoke(context);
-                if (context.Response.StatusCode == StatusCodes.Status404NotFound) {
-                    context.Response.ContentType = "application/json";
-                    var response = new ErrorDetails()
-                    {
-                        StatusCode = StatusCodes.Status404NotFound,
-                        ErrorMessage = $"This URL {context.Request.Path} is Not Found",
-                    };
-                    await context.Response.WriteAsJsonAsync(response);
+                if (context.Response.StatusCode == StatusCodes.Status404NotFound)
+                {
+                    await HandlingNotFoundErrorAsync(context);
                 }
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
 
-                context.Response.ContentType = "application/json";
-                var response = new ErrorDetails()
-                {
-                    ErrorMessage = ex.Message,
-                };
-
-                response.StatusCode = ex switch
-                {
-                    NotFoundException => StatusCodes.Status404NotFound,
-                    _ => StatusCodes.Status500InternalServerError,
-                };
-
-                context.Response.StatusCode = response.StatusCode;
-
-               await context.Response.WriteAsJsonAsync(response);
+                await HandlingExceptionsErrorAsync(context, ex);
             }
+        }
+
+        private static async Task HandlingExceptionsErrorAsync(HttpContext context, Exception ex)
+        {
+            context.Response.ContentType = "application/json";
+            var response = new ErrorDetails()
+            {
+                ErrorMessage = ex.Message,
+            };
+
+            response.StatusCode = ex switch
+            {
+                NotFoundException => StatusCodes.Status404NotFound,
+                _ => StatusCodes.Status500InternalServerError,
+            };
+
+            context.Response.StatusCode = response.StatusCode;
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+
+        private static async Task HandlingNotFoundErrorAsync(HttpContext context)
+        {
+            context.Response.ContentType = "application/json";
+            var response = new ErrorDetails()
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                ErrorMessage = $"This URL {context.Request.Path} is Not Found",
+            };
+            await context.Response.WriteAsJsonAsync(response);
         }
     }
 }
