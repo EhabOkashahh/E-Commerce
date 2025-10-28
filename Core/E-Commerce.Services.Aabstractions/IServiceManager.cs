@@ -1,5 +1,4 @@
 ﻿using E_Commerce.Services.Aabstractions.Baskets;
-using E_Commerce.Services.Aabstractions.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,7 @@ namespace E_Commerce.Services.Aabstractions
     {
         IProductServices ProductServices { get; }
         IBasketServices BasketServices { get; }
+        ICacheServices CacheServices { get; }
 
     }
 }

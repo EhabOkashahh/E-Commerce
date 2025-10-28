@@ -2,7 +2,7 @@
 using E_Commerce.Domain.Contracts;
 using E_Commerce.Domain.Entities.Products;
 using E_Commerce.Domain.Exceptions.ProductExceptions;
-using E_Commerce.Services.Aabstractions.Product;
+using E_Commerce.Services.Aabstractions;
 using E_Commerce.Services.Specification.Products;
 using E_Commerce.Shared;
 using E_Commerce.Shared.DTOS.Product;
@@ -13,7 +13,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Services.Products
+namespace E_Commerce.Services
 {
     public class ProductService(IUnitOfWork unitOfWork , IMapper _mapper) : IProductServices
     {
