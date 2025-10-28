@@ -20,10 +20,10 @@ namespace E_Commerce.Services.Baskets
             var basket = _mapper.Map<BasketDto>(result);
             return result is null ? throw new BasketNotFoundException(id) : basket;
         }
-        public async Task<BasketDto?> CreateBasketAsync(BasketDto Basket, TimeSpan timeToLive)
+        public async Task<BasketDto?> CreateBasketAsync(BasketDto Basket)
         {
             var basket = _mapper.Map<CustomerBasket>(Basket);
-            basket = await repository.CreateBasketAsync(basket, timeToLive);
+            basket = await repository.CreateBasketAsync(basket , TimeSpan.FromDays(30));
 
             var result = _mapper.Map<BasketDto>(basket);
             return basket is null ? throw new BasketCreateOrUpdateBadRequestException() : result;

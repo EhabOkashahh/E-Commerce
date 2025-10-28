@@ -10,6 +10,7 @@ using System.Reflection.Metadata;
 using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
+using E_Commerce.Services.Mapping.Baskets;
 
 namespace E_Commerce.Services
 {
@@ -18,6 +19,7 @@ namespace E_Commerce.Services
         public static IServiceCollection AddApplicationServices(this IServiceCollection services , IConfiguration configuration) {
 
             services.AddAutoMapper(m => m.AddProfile(new ProductProfile(configuration)));
+            services.AddAutoMapper(m => m.AddProfile(new BasketProfile()));
             services.AddScoped<IServiceManager, ServiceManager>();
 
             return services;

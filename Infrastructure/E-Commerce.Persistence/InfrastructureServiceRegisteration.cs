@@ -1,5 +1,6 @@
 ﻿using E_Commerce.Domain.Contracts;
 using E_Commerce.Persistence.Data.Contexts;
+using E_Commerce.Persistence.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ namespace E_Commerce.Persistence
             });
             service.AddScoped<IDbInitializer, DbInitializer>();
             service.AddScoped<IUnitOfWork, UnitOfWork>();
+            service.AddScoped<IBasketRepository, BasketRepository>();
             service.AddSingleton<IConnectionMultiplexer>(serviceProvider => ConnectionMultiplexer.Connect(configurations.GetConnectionString("Redis")!));
            
             return service;

@@ -10,7 +10,7 @@ namespace E_Commerce.Services.Aabstractions.Baskets
     public interface IBasketServices
     {
         Task<BasketDto> GetBasketAsync(string id);
-        Task<BasketDto?> CreateBasketAsync(BasketDto Basket, TimeSpan timeToLive);
+        Task<BasketDto?> CreateBasketAsync(BasketDto Basket);
         Task<bool> DeleteBasketAsync(string id);
     }
 }
