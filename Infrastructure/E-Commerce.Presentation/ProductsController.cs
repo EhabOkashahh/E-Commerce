@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Presentation.Product
+namespace E_Commerce.Presentation
 {
     [ApiController]
     [Route("api/[controller]")]
