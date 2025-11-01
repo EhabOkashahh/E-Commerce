@@ -1,5 +1,6 @@
 ﻿using E_Commerce.Domain.Contracts;
 using E_Commerce.Persistence.Data.Contexts;
+using E_Commerce.Persistence.Identity;
 using E_Commerce.Persistence.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,12 @@ namespace E_Commerce.Persistence
             {
                 o.UseSqlServer(configurations.GetConnectionString("DefaultConnection"));
             });
+
+            service.AddDbContext<StoreIdentityDbContext>(o =>
+            {
+                o.UseSqlServer(configurations.GetConnectionString("IdentityConnection"));
+            });
+
             service.AddScoped<IDbInitializer, DbInitializer>();
             service.AddScoped<IUnitOfWork, UnitOfWork>();
             service.AddScoped<IBasketRepository, BasketRepository>();
