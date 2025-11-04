@@ -4,9 +4,14 @@ using E_Commerce.Middlewares;
 using E_Commerce.Persistence;
 using E_Commerce.Persistence.Identity;
 using E_Commerce.Services;
+using E_Commerce.Shared;
 using E_Commerce.Shared.ErrorModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace E_Commerce.Extentions
 {
@@ -20,10 +25,10 @@ namespace E_Commerce.Extentions
 
             services.AddInfrastructureService(configuration);
             services.AddApplicationServices(configuration);
-
             services.AddIdentityService();
 
-            ConfigureService(services);
+            services.ConfigureService();
+            services.AddAuthenticationServices(configuration);
 
             return services;
         }
@@ -32,6 +37,33 @@ namespace E_Commerce.Extentions
             services.AddControllers();
             return services;
         }
+        private static IServiceCollection AddAuthenticationServices(this IServiceCollection services , IConfiguration configuration)
+        {
+            var JwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>();
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = "Bearer";
+                o.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(o =>
+                {
+                    o.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = JwtOptions.Issuer,
+
+                        ValidateAudience = true,
+                        ValidAudience = JwtOptions.Audience,
+
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Issuer)),
+
+                        ValidateLifetime = true,
+                    };
+                });
+            
+            return services;
+        }
+        
         private static IServiceCollection AddSwaggerService(this IServiceCollection services)
         {
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -81,6 +113,7 @@ namespace E_Commerce.Extentions
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

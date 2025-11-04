@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
 using E_Commerce.Services.Aabstractions;
+using E_Commerce.Services.Mapping.Baskets;
 using E_Commerce.Services.Mapping.Products;
+using E_Commerce.Shared;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +12,6 @@ using System.Reflection.Metadata;
 using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
-using E_Commerce.Services.Mapping.Baskets;
 
 namespace E_Commerce.Services
 {
@@ -20,6 +21,7 @@ namespace E_Commerce.Services
 
             services.AddAutoMapper(m => m.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(m => m.AddProfile(new BasketProfile()));
+            services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
             services.AddScoped<IServiceManager, ServiceManager>();
 
             return services;
