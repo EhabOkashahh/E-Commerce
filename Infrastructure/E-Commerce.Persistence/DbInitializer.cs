@@ -1,5 +1,6 @@
 ﻿using E_Commerce.Domain.Contracts;
 using E_Commerce.Domain.Entities.Identity;
+using E_Commerce.Domain.Entities.Orders;
 using E_Commerce.Domain.Entities.Products;
 using E_Commerce.Persistence.Data.Contexts;
 using E_Commerce.Persistence.Identity;
@@ -25,6 +26,16 @@ namespace E_Commerce.Persistence
             // add Migrations
             if (_context.Database.GetPendingMigrationsAsync().GetAwaiter().GetResult().Any()) await _context.Database.MigrateAsync();
 
+            // DeliveryMethods
+            if (!_context.DeliveryMethods.Any())
+            {
+                var seed = await File.ReadAllTextAsync(@"..\Infrastructure\E-Commerce.Persistence\Data\DataSeeding\delivery.json");
+                var DeliveryList = JsonSerializer.Deserialize<List<DeliveryMethod>>(seed);
+                if(DeliveryList is not null &&  DeliveryList.Count > 0)
+                {
+                    await _context.AddRangeAsync(DeliveryList);
+                }
+            }
 
             //brands
             if (!_context.ProductBrands.Any())

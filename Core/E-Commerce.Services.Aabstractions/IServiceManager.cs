@@ -13,6 +13,7 @@ namespace E_Commerce.Services.Aabstractions
         IBasketServices BasketServices { get; }
         ICacheServices CacheServices { get; }
         IAuthServices AuthServices { get; }
+        IOrderServices OrderServices { get; }
 
     }
 }

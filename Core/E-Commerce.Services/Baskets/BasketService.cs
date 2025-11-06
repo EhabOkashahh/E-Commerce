@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Services
+namespace E_Commerce.Services.Baskets
 {
     public class BasketService(IBasketRepository repository, IMapper _mapper) : IBasketServices
     {

@@ -5,6 +5,10 @@ using E_Commerce.Domain.Entities.Products;
 using E_Commerce.Services.Aabstractions;
 using E_Commerce.Services.Aabstractions.Baskets;
 using E_Commerce.Services.Auth;
+using E_Commerce.Services.Baskets;
+using E_Commerce.Services.Cache;
+using E_Commerce.Services.Orders;
+using E_Commerce.Services.Products;
 using E_Commerce.Shared;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -28,5 +32,7 @@ namespace E_Commerce.Services
         public IBasketServices BasketServices { get; } = new BasketService(basketRepository, mapper);
         public ICacheServices CacheServices { get; } = new CacheService(cacheRepository);
         public IAuthServices AuthServices { get; } = new AuthService(userManager,options);
+        public IOrderServices OrderServices { get; } = new OrderService(unitOfWork,mapper,basketRepository);
     }
 }
+    

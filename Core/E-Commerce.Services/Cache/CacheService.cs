@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace E_Commerce.Services
+namespace E_Commerce.Services.Cache
 {
     public class CacheService(ICacheRepository repository) : ICacheServices
     {

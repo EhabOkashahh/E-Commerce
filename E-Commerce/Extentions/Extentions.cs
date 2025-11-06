@@ -55,7 +55,7 @@ namespace E_Commerce.Extentions
                         ValidAudience = JwtOptions.Audience,
 
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.Issuer)),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtOptions.SecretKey)),
 
                         ValidateLifetime = true,
                     };
