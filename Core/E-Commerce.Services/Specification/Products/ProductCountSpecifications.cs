@@ -12,11 +12,11 @@ namespace E_Commerce.Services.Specification.Products
     {
         public ProductCountSpecifications(ProductQueryParam param) : base(
                 p =>
-                (!param.brandId.HasValue || p.BrandId == param.brandId)
+                (!param.BrandId.HasValue || p.BrandId == param.BrandId)
                 &&
-                (!param.typeId.HasValue || p.TypeId == param.typeId)
+                (!param.TypeId.HasValue || p.TypeId == param.TypeId)
                 &&
-                (string.IsNullOrEmpty(param.searchText) || p.Name.ToLower().Contains(param.searchText.ToLower()))
+                (string.IsNullOrEmpty(param.SearchText) || p.Name.ToLower().Contains(param.SearchText.ToLower()))
             )
         {
             

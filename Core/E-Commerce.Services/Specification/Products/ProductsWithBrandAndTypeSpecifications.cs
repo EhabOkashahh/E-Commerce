@@ -15,19 +15,11 @@ namespace E_Commerce.Services.Specification.Products
         {
             ApplyInclude();
         }
-        public ProductsWithBrandAndTypeSpecifications(ProductQueryParam param) : base(
-                p =>
-                (!param.brandId.HasValue || p.BrandId == param.brandId)
-                &&
-                (!param.typeId.HasValue || p.TypeId == param.typeId)
-                &&
-                (string.IsNullOrEmpty(param.searchText) || p.Name.ToLower().Contains(param.searchText.ToLower()))
-            )
+        public ProductsWithBrandAndTypeSpecifications(ProductQueryParam param) : base(p => (!param.BrandId.HasValue || p.BrandId == param.BrandId) && (!param.TypeId.HasValue || p.TypeId == param.TypeId) && (string.IsNullOrEmpty(param.SearchText) || p.Name.ToLower().Contains(param.SearchText.ToLower())))
         {
-            
             ApplyInclude();
             ApplySorting(param.Sort);
-            ApplyPagination(param.pageSize, param.pageIndex);
+            ApplyPagination(param.PageSize, param.PageIndex);
         }
 
 

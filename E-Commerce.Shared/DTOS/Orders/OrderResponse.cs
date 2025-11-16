@@ -14,6 +14,7 @@ namespace E_Commerce.Shared.DTOS.Orders
         public OrderAddressDto ShipingAddress { get; set; }
         public string DeliveryMethod { get; set; }
         public ICollection<OrderItemDto> Items { get; set; }
+        public string status { get; set; }
         public decimal SubTotal { get; set; } // price * quantity
         public decimal Total { get; set; } // price + delivery Cost
 

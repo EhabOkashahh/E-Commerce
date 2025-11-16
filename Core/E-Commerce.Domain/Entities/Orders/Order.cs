@@ -15,13 +15,14 @@ namespace E_Commerce.Domain.Entities.Orders
             
         }
 
-        public Order(string userEmail, OrderAdress shipingAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> items, decimal subTotal)
+        public Order(string userEmail, OrderAdress shipingAddress, DeliveryMethod deliveryMethod, ICollection<OrderItem> items, decimal subTotal, string? paymentIntenetId)
         {
             UserEmail = userEmail;
             ShipingAddress = shipingAddress;
             DeliveryMethod = deliveryMethod;
             Items = items;
             SubTotal = subTotal;
+            PaymentIntenetId = paymentIntenetId;
         }
 
         public string UserEmail { get; set; }
@@ -33,7 +34,7 @@ namespace E_Commerce.Domain.Entities.Orders
         public ICollection<OrderItem> Items { get; set; }
         public decimal SubTotal { get; set; } // price * quantity
 
-
+        public string? PaymentIntenetId{ get; set; }
         public decimal GetTotal() => SubTotal + DeliveryMethod.Price;
 
     }

@@ -38,7 +38,7 @@ namespace E_Commerce.Presentation
 
         [Authorize]
         [HttpGet("delivery-methods")]
-        public async Task<IActionResult> GetAllDeliveryMethodAsync()
+        public async Task<IActionResult> GetAllDeliveryMethod()
         {   
            var result = await _serviceManager.OrderServices.GetAllDeliveryMethodsAsync();
             return Ok(result);
@@ -47,12 +47,13 @@ namespace E_Commerce.Presentation
 
         [Authorize]
         [HttpGet("user-orders")]
-        public async Task<IActionResult> GeOrdersForSpecificUserAsync()
+        public async Task<IActionResult> GeOrdersForSpecificUser()
         {
             var UserEmailClaim = User.FindFirst(ClaimTypes.Email)!.Value;
            var result = await _serviceManager.OrderServices.GetAllOrdersForSpecificUserAsync(UserEmailClaim);
             return Ok(result);
-        } 
+        }
+        
         #endregion
 
 

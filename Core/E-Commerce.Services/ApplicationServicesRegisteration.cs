@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using E_Commerce.Services.Aabstractions;
+using E_Commerce.Services.Mapping.Auth;
 using E_Commerce.Services.Mapping.Baskets;
 using E_Commerce.Services.Mapping.Orders;
 using E_Commerce.Services.Mapping.Products;
@@ -23,6 +24,7 @@ namespace E_Commerce.Services
             services.AddAutoMapper(m => m.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(m => m.AddProfile(new BasketProfile()));
             services.AddAutoMapper(m => m.AddProfile(new OrderProfile()));
+            services.AddAutoMapper(m => m.AddProfile(new  AuthProfile()));
             services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
             services.AddScoped<IServiceManager, ServiceManager>();
 

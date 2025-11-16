@@ -23,8 +23,7 @@ namespace E_Commerce.Presentation
         [ProducesResponseType(StatusCodes.Status400BadRequest , Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError , Type = typeof(ErrorDetails))]
         [Cache(40)]
-        [Authorize]
-        public async Task<ActionResult<ProductResponse>> GetAllProducts([FromQuery]ProductQueryParam param)
+        public async Task<ActionResult<PaginationResponse<ProductResponse>>> GetAllProducts([FromQuery]ProductQueryParam param)
         {
             var response = await _serviceManager.ProductServices.GetAllProductAsync(param);
 

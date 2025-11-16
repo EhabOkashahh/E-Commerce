@@ -30,6 +30,13 @@ namespace E_Commerce.Extentions
             services.ConfigureService();
             services.AddAuthenticationServices(configuration);
 
+            services.AddCors(o =>
+            {
+                o.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
             return services;
         }
         private static IServiceCollection AddBuiltInService(this IServiceCollection services)
@@ -112,10 +119,10 @@ namespace E_Commerce.Extentions
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

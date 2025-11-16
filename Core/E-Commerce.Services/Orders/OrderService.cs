@@ -24,7 +24,7 @@ namespace E_Commerce.Services.Orders
             var orderAdderss = _mapper.Map<OrderAdress>(request.ShipToAddress);
 
             var DeliveryMethod = await _unitOfWork.GetRepository<int, DeliveryMethod>().GetAsync(request.DeliveryMethodId);
-            if (DeliveryMethod is null) throw new DeliveryMethodNotFound();
+            if (DeliveryMethod is null) throw new DeliveryMethodNotFound(DeliveryMethod.Id);
 
 
             var basket = await _basketRepository.GetBasketAsync(request.BasketId);
@@ -44,11 +44,24 @@ namespace E_Commerce.Services.Orders
 
             var SubTotal = orderItems.Sum(i => i.Price * i.Quantity);
 
-            var Order = new Order(UserEmail, orderAdderss, DeliveryMethod,orderItems, SubTotal);
+
+
+            var spec = new OrderWithPaymentIntentSpecifications(basket.PaymentIntentId);
+            var result = await _unitOfWork.GetRepository<Guid, Order>().GetAsync(spec);
+
+            if(result is not null)
+                _unitOfWork.GetRepository<Guid, Order>().Delete(result);
+            
+
+
+            var Order = new Order(UserEmail, orderAdderss, DeliveryMethod,orderItems, SubTotal , basket.PaymentIntentId);
             await _unitOfWork.GetRepository<Guid, Order>().AddAsync(Order);
+            
 
             var count = await _unitOfWork.SaveChangesAsync();
             if (count <= 0) throw new CreateOrderException();
+            _unitOfWork.GetRepository<Guid, Order>().Update(Order);
+            await _unitOfWork.SaveChangesAsync();
             var response = _mapper.Map<OrderResponse>(Order);
             return response;
         }

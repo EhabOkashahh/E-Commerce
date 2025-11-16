@@ -14,6 +14,7 @@ namespace E_Commerce.Services.Aabstractions
         ICacheServices CacheServices { get; }
         IAuthServices AuthServices { get; }
         IOrderServices OrderServices { get; }
+        IPayementSecivce payementSecivce { get; }
 
     }
 }

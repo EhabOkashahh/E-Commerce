@@ -28,7 +28,7 @@ namespace E_Commerce.Services.Products
             var CountSpec = new ProductCountSpecifications(param);
             var CountBeforePagination =await unitOfWork.GetRepository<int, Product>().CountAsync(CountSpec); 
 
-            return new PaginationResponse<ProductResponse>(param.pageSize,param.pageIndex,CountBeforePagination,Response);
+            return new PaginationResponse<ProductResponse>(param.PageSize,param.PageIndex,CountBeforePagination,Response);
         }
 
         public async Task<ProductResponse> GetProductByIdAsync(int id)

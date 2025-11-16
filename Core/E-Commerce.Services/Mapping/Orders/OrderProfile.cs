@@ -15,10 +15,10 @@ namespace E_Commerce.Services.Mapping.Orders
         public OrderProfile()
         {
             CreateMap<Order, OrderResponse>()
-                .ForMember(D => D.OrderId , O => O.MapFrom(S =>S.Id))
-                .ForMember(D => D.Total , O=>O.MapFrom(S =>S.GetTotal()))
-                .ForMember(D => D.DeliveryMethod , O=>O.MapFrom(S =>S.DeliveryMethod.ShortName));
-
+                .ForMember(D => D.OrderId, O => O.MapFrom(S => S.Id))
+                .ForMember(D => D.Total, O => O.MapFrom(S => S.GetTotal()))
+                .ForMember(D => D.DeliveryMethod, O => O.MapFrom(S => S.DeliveryMethod.ShortName))
+                .ForMember(D => D.status, O => O.MapFrom(S => S.OrderStatus.ToString()));
             CreateMap<OrderAdress, OrderAddressDto>().ReverseMap();
 
             CreateMap<OrderItem, OrderItemDto>()

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Domain.Exceptions.OrderExceptions
 {
-    public class DeliveryMethodNotFound() : NotFoundException("Delivery Method Was not found")
+    public class DeliveryMethodNotFound(int id) : NotFoundException($"Delivery Method with id {id} Was not found")
     {
     }
 }

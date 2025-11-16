@@ -1,4 +1,5 @@
-﻿using E_Commerce.Domain.Entities.Identity;
+﻿using AutoMapper;
+using E_Commerce.Domain.Entities.Identity;
 using E_Commerce.Domain.Exceptions;
 using E_Commerce.Domain.Exceptions.AuthExceptions;
 using E_Commerce.Services.Aabstractions;
@@ -9,6 +10,7 @@ using E_Commerce.Shared.DTOS.Auth.Register;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -23,8 +25,56 @@ using System.Threading.Tasks;
 
 namespace E_Commerce.Services.Auth
 {
-    public class AuthService(UserManager<AppUser> _userManager,IOptions<JwtOptions> options) : IAuthServices
+    public class AuthService(UserManager<AppUser> _userManager, IOptions<JwtOptions> options, IMapper _mapper) : IAuthServices
     {
+        public async Task<bool> CheckEmailExistsAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user is not null ? true : throw new UserNotFoundException(email);
+        }
+        public async Task<AuthResponse> GetCurrentUserAsync(string email)
+        {
+            await CheckEmailExistsAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
+            var userToReturn = new AuthResponse()
+            {
+                DisplayName = user.DisplayName,
+                Email = user.Email,
+                Token = await GenerateTokenAsync(user)
+            };
+            return userToReturn;
+        }
+
+        public async Task<AddressDto> GetCurrentUserAddress(string email)
+        {
+            var user = await _userManager.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            if(user is null) throw new UserNotFoundException(email);
+
+            var AddressToResturn = _mapper.Map<AddressDto>(user.Address);
+            return AddressToResturn;
+        }
+
+        public async Task<AddressDto> UpdateCurrentUserAddressAsync(AddressDto request, string email)
+        {
+            var user = await _userManager.Users.Include(u => u.Address).FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            if (user is null) throw new UserNotFoundException(email);
+
+            if(user.Address is null)
+            {
+                user.Address = _mapper.Map<Address>(request);
+            }
+            else
+            {
+                user.Address.FirstName = request.FirstName;
+                user.Address.LastName = request.LastName;
+                user.Address.City = request.City;
+                user.Address.Country = request.Country;
+                user.Address.Street = request.Street;
+            }
+                await _userManager.UpdateAsync(user);
+
+            return _mapper.Map<AddressDto>(user.Address);
+        }
         public async Task<AuthResponse> LoginAsync(LoginDto logRequest)
         {
             var LogUser = await _userManager.FindByEmailAsync(logRequest.Email);
@@ -65,6 +115,8 @@ namespace E_Commerce.Services.Auth
                                        Email = user.Email, 
                                        Token = await GenerateTokenAsync(user)};
         }
+
+      
 
         private async Task<string> GenerateTokenAsync(AppUser user)
         {
