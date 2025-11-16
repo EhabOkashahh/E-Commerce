@@ -8,6 +8,7 @@ namespace E_Commerce.Shared.DTOS.Product
 {
     public class BrandTypeResponse
     {
+        public int id  { get; set; }
         public string Name { get; set; }
     }
 }

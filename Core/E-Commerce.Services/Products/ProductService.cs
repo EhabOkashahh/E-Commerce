@@ -19,7 +19,8 @@ namespace E_Commerce.Services.Products
     {
         public async Task<PaginationResponse<ProductResponse>> GetAllProductAsync(ProductQueryParam param)
         {
-
+            if(param.BrandId == 0) param.BrandId = null;
+            if(param.TypeId == 0) param.TypeId = null;
             var spec = new ProductsWithBrandAndTypeSpecifications(param);
 
             var products = await unitOfWork.GetRepository<int, Product>().GetAllAsync(spec);

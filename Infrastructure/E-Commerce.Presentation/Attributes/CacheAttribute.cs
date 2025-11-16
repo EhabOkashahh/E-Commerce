@@ -42,9 +42,9 @@ namespace E_Commerce.Presentation.Attributes
 
         private string GenerateCacheKey(HttpRequest request)
         {
-            var queryPartsCombined = request.Query.OrderBy(q=>q.Key).Aggregate(string.Empty,(acc, q) => $"{acc}|{q.Key}-{q.Value}");
+            var queryPartsCombined = request.Query.OrderBy(q => q.Key).Aggregate("", (acc, q) => string.IsNullOrEmpty(acc) ? $"{q.Value}" : $"{acc}-{q.Value}");
 
-            return $"{request.Path}{queryPartsCombined}";
+            return $"{queryPartsCombined}";
         }
     }
 }
