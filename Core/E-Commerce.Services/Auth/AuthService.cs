@@ -30,7 +30,7 @@ namespace E_Commerce.Services.Auth
         public async Task<bool> CheckEmailExistsAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            return user is not null ? true : throw new UserNotFoundException(email);
+            return user is not null ? throw new ValidationException("This email is already in use") : true;
         }
         public async Task<AuthResponse> GetCurrentUserAsync(string email)
         {
@@ -101,7 +101,7 @@ namespace E_Commerce.Services.Auth
             {
                 Email = RegRequest.Email,
                 DisplayName = RegRequest.DisplayName,
-                PhoneNumber = RegRequest.Phonenumber,
+                //PhoneNumber = RegRequest.Phonenumber,
                 UserName = RegRequest.Username
             };
 
@@ -115,9 +115,6 @@ namespace E_Commerce.Services.Auth
                                        Email = user.Email, 
                                        Token = await GenerateTokenAsync(user)};
         }
-
-      
-
         private async Task<string> GenerateTokenAsync(AppUser user)
         {
             var jwtOptions = options.Value;
